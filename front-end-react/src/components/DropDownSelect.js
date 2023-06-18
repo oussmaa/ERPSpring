@@ -3,7 +3,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useRef, useState } from 'react';
 import { useOutsideAlerter } from '../hooks/myHooks';
 
-const DropDownSelect = ({ title, id, name, onChange }) => {
+
+
+
+const DropDownSelect = ({ title, id, name, onChange, options }) => {
         const [isOpen, setIsOpen] = useState(false);
         const [selectedOptions, setSelectedOptions] = useState([]);
         const dropDownToggle = useRef()
@@ -58,13 +61,9 @@ const DropDownSelect = ({ title, id, name, onChange }) => {
                         multiple 
                         value={selectedOptions} 
                         onChange={handleOptionChange}>
-                    <option value="option1">Option 1</option>
-                    <option value="option2">Option 2</option>
-                    <option value="option3">Option 3</option>
-                    <option value="option4">Option 4</option>
-                    <option value="option4">Option 4</option>
-                    <option value="option4">Option 4</option>
-                    <option value="option4">Option 4</option>
+                      {options.map((op)=> {
+                        return <option value={op.value}>{op.value}</option>
+                      })}
                   </select>
               </div>
             )}

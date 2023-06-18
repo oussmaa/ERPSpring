@@ -27,6 +27,27 @@ const buttons1 = [
   }
 ]
 
+const dropDownOptions = [
+  {
+    value : "Apple",
+  },
+  {
+    value : "Sumsung"
+  },
+  {
+    value : "Watch"
+  },
+  {
+    value : "Gadgets"
+  },
+  {
+    value : "Phone"
+  },
+  {
+    value : "Laptob"
+  }
+]
+
 const AddProductPage = () => {
 
   const [productInfo, setProductInfo] = useState({
@@ -38,6 +59,7 @@ const AddProductPage = () => {
                                                 taxClass : "",
                                                 VATAmount : "",
                                                 category : "",
+                                                tag : "",
                                                 status : ""
                                                     })
   const handleChange = (e)=> {
@@ -165,7 +187,13 @@ const AddProductPage = () => {
                                   onChange={handleChange}
                                   value  = {productInfo.category}
                                   values={["phone","laptob", "TV"]}/>
-                          <DropDownSelect id={'dr-tg'} title={"Product Tag"}/>
+                          <DropDownSelect 
+                                      id={'dr-tg'} 
+                                      title={"Product Tag"}
+                                      onChange={handleChange}
+                                      name={"tag"}
+                                      options={dropDownOptions}
+                                      />
                       </PanelContainer>
                       <PanelContainer>
                           <PanelHeader  title={"status"}>
