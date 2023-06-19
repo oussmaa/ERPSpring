@@ -6,30 +6,30 @@ import { useOutsideAlerter } from '../hooks/myHooks';
 
 
 
-const DropDownSelect = ({ title, id, name, onChange, options }) => {
+const DropDownSelect = ({ title, id, name, options, setProductInfo, productInfo }) => {
         const [isOpen, setIsOpen] = useState(false);
-        const [selectedOptions, setSelectedOptions] = useState([]);
         const dropDownToggle = useRef()
 
         useOutsideAlerter(dropDownToggle,(e) => {
             setIsOpen(false)
           })
         const handleOptionChange = (event) => {
-          const currentOptions =[...selectedOptions];
-          const nextOptions = [...Array.from(event.target.selectedOptions, (option)=> option.value)]
-          nextOptions.map((op)=>{
-            if(!currentOptions.includes(op)){
-              currentOptions.push(op)
-            }
-          })
-          setSelectedOptions(currentOptions);
+                  const currentTags =[...productInfo.tag];
+
+                  const nextOptions = [...Array.from(event.target.selectedOptions, (option)=> option.value)]
+                  nextOptions.map((op)=>{
+                    if(!currentTags.includes(op)){
+                      currentTags.push(op)
+                    }
+                  })
+                  setProductInfo({...productInfo, tag : currentTags});
         };
       
         const removeOptionClick = (index)=> {
-          const options = [...selectedOptions]
-          options.splice(index, 1)
-          setSelectedOptions(options)
-        }
+                        const options = [...productInfo.tag]
+                        options.splice(index, 1)
+                        setProductInfo({...productInfo, tag : options})
+              }
       
         const toggleDropdown = () => {
             setIsOpen(!isOpen);
@@ -46,7 +46,7 @@ const DropDownSelect = ({ title, id, name, onChange, options }) => {
                    style={{borderColor : isOpen? "#5C59E8" : "#E0E2E7", outlineColor : isOpen? "#5C59E8" : "#E0E2E7"}}
                   >
                 <div className={`multiple-custom-select`}>
-                  {selectedOptions.length > 0 ? selectedOptions.map((vl, index)=>  <div key={vl + index} className='show-option'>
+                  {productInfo.tag.length > 0 ? productInfo.tag.map((vl, index)=>  <div key={vl + index} className='show-option'>
                                                                                             {vl} <FontAwesomeIcon 
                                                                                                         onClick={()=> removeOptionClick(index)} 
                                                                                                         icon={"fa-solid fa-xmark"}/>
@@ -59,7 +59,7 @@ const DropDownSelect = ({ title, id, name, onChange, options }) => {
                   <select 
                         name={name}
                         multiple 
-                        value={selectedOptions} 
+                        value={productInfo.tag} 
                         onChange={handleOptionChange}>
                       {options.map((op)=> {
                         return <option value={op.value}>{op.value}</option>

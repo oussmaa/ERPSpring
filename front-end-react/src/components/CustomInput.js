@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 const CustomInput = ({ id, name, labelTxt, type, cls, onChange, placeholder, element, icon, value }) => {
   return (
     <div className={`input-container ${cls}`}>
-      <label htmlFor= {`#${id}`}>
+      <label className='custom-label' htmlFor= {`#${id}`}>
             {labelTxt}
       </label>
       <div className={`input-child-coontainer`}>

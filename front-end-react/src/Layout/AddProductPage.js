@@ -10,6 +10,8 @@ import CustomSelect from '../components/CustomSelect'
 import  Badge  from '../components/Badge'
 import AddMediaSpace from '../components/AddMediaSpace'
 import Row from '../components/Row'
+import SwitchButton from '../components/SwitchButton'
+import CheckBoxGroup from '../components/CheckBoxGroup'
 
 library.add(faFloppyDisk, faImage, faFilm, faDollarSign, faPercent)
 const buttons1 = [
@@ -48,6 +50,12 @@ const dropDownOptions = [
   }
 ]
 
+const locations = [
+  {value : "Storage Area", name : "StorageArea"}, 
+   {value : "Storage Zone", name : "StorageZone"},
+  {value : "StorageLocation", name : "StorageLocation"}
+  ]
+
 const AddProductPage = () => {
 
   const [productInfo, setProductInfo] = useState({
@@ -59,14 +67,34 @@ const AddProductPage = () => {
                                                 taxClass : "",
                                                 VATAmount : "",
                                                 category : "",
-                                                tag : "",
-                                                status : ""
-                                                    })
+                                                tag : [],
+                                                status : "",
+                                                location : {
+                                                          status : false,
+                                                          options :    {
+                                                                StorageArea : false,
+                                                                StorageZone : false,
+                                                                StorageLocation : false
+                                                              }
+                                                            }
+                                                })
+  const [switchOn, setSwitchOn] = useState(false)
+
+
+  const handleSwitchClick = ()=> {
+       setSwitchOn(!switchOn)
+
+   }
+
+
+   const handleCheckBoxChange = (e)=> {
+            
+   }
+
+
   const handleChange = (e)=> {
     const updateProductInfo = {...productInfo}
     updateProductInfo[e.target.name] = e.target.value
-    console.log(e.target.name)
-    console.log(updateProductInfo)
     setProductInfo(updateProductInfo)
   }
 
@@ -192,19 +220,21 @@ const AddProductPage = () => {
                                       title={"Product Tag"}
                                       onChange={handleChange}
                                       name={"tag"}
+                                      setProductInfo = {setProductInfo}
+                                      productInfo = {productInfo}
                                       options={dropDownOptions}
                                       />
                       </PanelContainer>
                       <PanelContainer>
                           <PanelHeader  title={"status"}>
                             {productInfo.status && <Badge 
-                                  content={productInfo.status} 
-                                  nullValue={0} 
-                                  valueBg={productInfo.status === "Draft"? 0
-                                            : productInfo.status === "Published"? 1
-                                            : -1
-                                  } 
-                                  nullColor={"#667085"}/>}
+                                                      content={productInfo.status} 
+                                                      nullValue={0} 
+                                                      valueBg={productInfo.status === "Draft"? 0
+                                                                : productInfo.status === "Published"? 1
+                                                                : -1
+                                                              } 
+                                                      nullColor={"#667085"}/>}
                           </PanelHeader>
                           <CustomSelect 
                                 optionsTitle={"Product Status"} 
@@ -214,6 +244,17 @@ const AddProductPage = () => {
                                 onChange={handleChange}
                                 value  = {productInfo.status}
                                 values={["Draft","Published", "Low Stock"]} />
+                      </PanelContainer>
+                      
+                      <PanelContainer>
+                          <PanelHeader  title={"Location"}/>
+                            <SwitchButton
+                                      onClick={handleSwitchClick}
+                                      switchOn={switchOn}
+                                     id={"swBtn"} />
+                            {switchOn && <CheckBoxGroup 
+                                                checkboxOptions={locations}
+                                                />}
                       </PanelContainer>
                   </div>
                 </div> 

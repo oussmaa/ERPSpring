@@ -782,7 +782,7 @@ button {
 .select-option-container {
   width: 100%;
 }
-.select-option-container label, .dropdown label {
+.custom-label {
   font-style: normal;
   font-weight: 500;
   font-size: 14px;
@@ -927,7 +927,7 @@ button {
   min-width: 100px !important;
   height: 100px;
 }
-.add-media-space label {
+.add-media-space label, .switch-container label {
   font-style: normal;
   font-weight: 500;
   font-size: 14px;
@@ -990,3 +990,44 @@ button {
   min-width: 300px;
   flex-grow: 1;
 }
+
+
+
+.add-location {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  min-width: 300px;
+  flex-wrap: wrap;
+}
+
+.switch-container {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 5px;
+}
+.switch-button {
+  width: 27px;
+  height: 15px;
+  border: 1px solid #919191;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  transition: 0.18s linear;
+}
+.cr-sw-btn {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  transition: 0.18s linear;
+  border: 1px solid rgb(82, 82, 82);
+}
+
+.checkbox-group input{
+  cursor: pointer;
+}
+
+

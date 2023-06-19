@@ -28,7 +28,7 @@ const AddMediaSpace = ({ title, icon, btnValue, multiple }) => {
     <div className='add-media-space'>
       <label htmlFor={`${btnValue}-id`}>{title}</label>
       <div className='add-media' id={`${btnValue}-id`}>
-            <div className='products-media-row' style={{ justifyContent : mediaFiles.length > 0? "flex-start" : "center" }}>
+            <div className='products-media-row' style={{ justifyContent : mediaFiles.length > 1? "flex-start" : "center" }}>
                     {mediaFiles.length > 0? 
                             mediaFiles.map((mf, index)=> {
                                     return  <div key={"md-" + index} style={{width : btnValue === "Image"? "100px" : "100%"}} className={`show-product-media`}>
