@@ -1,10 +1,11 @@
 import SideBar from './SideBar'
-import MainPage from './MainPage'
 import OpenCloseSideBarProvider from '../contexts/OpenCloseSideBarProvider'
 import { useEffect } from 'react'
 import axios from 'axios'
 import { connect } from 'react-redux'
 import { loadingData, loadingFailed, loadingSuccess } from '../redux/fetchData/fetchActionsTypes'
+import { Outlet } from 'react-router'
+import NavBar from './NavBar'
 
 
 
@@ -24,8 +25,13 @@ const Page = (props) => {
   return (
     <div className='global-container'>
     <OpenCloseSideBarProvider>
-      <SideBar />
-      <MainPage  />
+          <SideBar />
+          <div className='main'>
+              <NavBar />
+              <div className='content-container'>
+                <Outlet />
+              </div>
+          </div>
     </OpenCloseSideBarProvider>
     </div>
   )

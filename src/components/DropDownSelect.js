@@ -1,3 +1,4 @@
+/* eslint-disable array-callback-return */
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useRef, useState } from 'react';
@@ -61,8 +62,8 @@ const DropDownSelect = ({ title, id, name, options, setProductInfo, productInfo 
                         multiple 
                         value={productInfo.tag} 
                         onChange={handleOptionChange}>
-                      {options.map((op)=> {
-                        return <option value={op.value}>{op.value}</option>
+                      {options.map((op, index)=> {
+                        return <option key={op + "-" + index} value={op.value}>{op.value}</option>
                       })}
                   </select>
               </div>

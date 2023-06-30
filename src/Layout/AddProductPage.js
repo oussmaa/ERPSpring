@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, {  useState } from 'react'
 import PageHeader from '../components/PageHeader'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faDollarSign, faFilm, faFloppyDisk, faImage, faPercent } from '@fortawesome/free-solid-svg-icons'
@@ -12,14 +12,43 @@ import AddMediaSpace from '../components/AddMediaSpace'
 import Row from '../components/Row'
 import SwitchButton from '../components/SwitchButton'
 import CheckBoxGroup from '../components/CheckBoxGroup'
+import axios from 'axios'
+import RequestMessage from '../components/RequestMessage'
 
 library.add(faFloppyDisk, faImage, faFilm, faDollarSign, faPercent)
+
+const productInputValues = {
+                              prName : "",
+                              description : "",
+                              price : "",
+                              quanatity : "",
+                              dsType : "",
+                              dsPercent : "",
+                              taxClass : "",
+                              VATAmount : "",
+                              category : "",
+                              tag : [],
+                              status : "",
+                              location : {
+                                        status : false,
+                                        options :    {
+                                              StorageArea : false,
+                                              StorageZone : false,
+                                              StorageLocation : false
+                                            }
+                                          }
+                              }
+
+
+
 const buttons1 = [
   {
     icon : "fa-solid fa-xmark",
     bgColor : "#FFFFFF",
     txtColor : "#667085",
     value : "cancel",
+    type : 'link',
+    link : '/products',
   },
   {
     icon : "fa-solid fa-floppy-disk",
@@ -56,39 +85,41 @@ const locations = [
   {value : "StorageLocation", name : "StorageLocation"}
   ]
 
+
+
+
+
+
+
 const AddProductPage = () => {
 
-  const [productInfo, setProductInfo] = useState({
-                                                prName : "",
-                                                description : "",
-                                                price : "",
-                                                dsType : "",
-                                                dsPercent : "",
-                                                taxClass : "",
-                                                VATAmount : "",
-                                                category : "",
-                                                tag : [],
-                                                status : "",
-                                                location : {
-                                                          status : false,
-                                                          options :    {
-                                                                StorageArea : false,
-                                                                StorageZone : false,
-                                                                StorageLocation : false
-                                                              }
-                                                            }
-                                                })
+  const [productInfo, setProductInfo] = useState({...productInputValues})
+
+                                                
   const [switchOn, setSwitchOn] = useState(false)
+
+  const [successReq, setSuccessReq] = useState({
+                                                  reqState : "",
+                                                  resMessage : ""
+                                                })
+  
+
+
 
 
   const handleSwitchClick = ()=> {
        setSwitchOn(!switchOn)
-
+       const updateProductInfo = {...productInfo, location : {...productInfo.location, status : switchOn}}
+       setProductInfo(updateProductInfo)  
    }
 
 
    const handleCheckBoxChange = (e)=> {
-            
+          const checked = e.target.checked
+          console.log(checked)
+          const updateLocation = {...productInfo.location.options }
+          updateLocation[e.target.name] = e.target.checked
+          setProductInfo({...productInfo, location : {...productInfo.location, options : updateLocation}})
    }
 
 
@@ -99,10 +130,48 @@ const AddProductPage = () => {
   }
 
 
+  const handleSubmit = (e)=> {
+    e.preventDefault()
+    const product = {
+      nameProduit : productInfo.prName,
+      description : productInfo.description,
+      price : productInfo.price,
+      // dscType : productInfo.dsType,
+      // dscPercent : productInfo.dsPercent,
+      // taxClass :productInfo.taxClass,
+      // VATAmount:productInfo.VATAmount,
+      categorie : productInfo.category,
+      // tag :productInfo.tag,
+      quanatity : productInfo.quanatity,
+      // status : productInfo.status
+    }
+    axios.post("http://localhost:5050/ProduitController", product)
+    .then((response)=>{
+        setSuccessReq({success : "success", resMessage : "Your product saved successfully."})
+        setTimeout(()=> {
+          setSuccessReq({success : "", resMessage : ""})
+        }, 5000)
+    })
+    .then(()=> {
+        setProductInfo(productInputValues)
+    })
+    .catch((err)=>{
+      setSuccessReq({success : "failed", resMessage : err.message})
+      setTimeout(()=> {
+        setSuccessReq({success : "", resMessage : ""})
+      }, 5000)
+      console.log("hedha error mta36 el catch")
+      console.log(err)
+    })
+  }
+
   return (
     <div className='add-product-page'>
+        <RequestMessage message={successReq.resMessage} success={successReq.success === "success"? "success"
+                                                              : successReq.success === "failed"? "failed"
+                                                              : ""} />
     {/* style={{border : "2px solid red", minWidth : "300px", width : "70%"}} */}
-            <form className='add-prodact-form'>
+            <form className='add-prodact-form' onSubmit={(e)=>handleSubmit(e)}>
               <PageHeader title={"Products"}  infoBtn={buttons1}/>
                  <div className='form-inputs'>
                   <div  className='section-form1'>
@@ -147,6 +216,7 @@ const AddProductPage = () => {
                           <PanelHeader  title={"Pricing"}/>
                           <CustomInput element={"text-input"} 
                                         type={"number"}
+                                        min = {0}
                                         onChange={handleChange}
                                         value  = {productInfo.price}
                                         placeholder={"Type base price here. . ."}
@@ -157,12 +227,12 @@ const AddProductPage = () => {
                           <Row cls={"inputs-flex-group"}>
                             <div style={{minWidth : "300px"}}>
                               <CustomSelect 
+                                    optionsTitle={"Discount Type"} 
+                                    placeholder={"Select a discount type"}
+                                    id={"discT"}
                                     name={"dsType"}
                                     onChange={handleChange}
                                     value  = {productInfo.dsType}
-                                    placeholder={"Select a discount type"}
-                                    optionsTitle={"Discount Type"} 
-                                    id={"discT"}
                                     values={["Type1", "Type2", "Type3"]} />
                             </div>
                             <div style={{minWidth : "300px"}}>
@@ -171,7 +241,10 @@ const AddProductPage = () => {
                                   name={"dsPercent"}
                                   element={"text-input"}
                                   type={"number"}
+                                  min = {0}
                                   labelTxt={"Discount Precentage (%)"}
+                                  onChange={handleChange}
+                                  value={productInfo.dsPercent}
                                   icon={"fa-solid fa-percent"}
                                   placeholder={"Type discount precentage. . ."}
                               />
@@ -194,6 +267,7 @@ const AddProductPage = () => {
                                   name={"VATAmount"}
                                   element={"text-input"}
                                   type={"number"}
+                                  min = {0}
                                   labelTxt={"VAT Amount (%)"}
                                   onChange={handleChange}
                                   value  = {productInfo.VATAmount}
@@ -226,7 +300,7 @@ const AddProductPage = () => {
                                       />
                       </PanelContainer>
                       <PanelContainer>
-                          <PanelHeader  title={"status"}>
+                          <PanelHeader  title={"Stock"}>
                             {productInfo.status && <Badge 
                                                       content={productInfo.status} 
                                                       nullValue={0} 
@@ -236,6 +310,18 @@ const AddProductPage = () => {
                                                               } 
                                                       nullColor={"#667085"}/>}
                           </PanelHeader>
+                            <CustomInput 
+                                id={"quanatity-id"}
+                                name={"quanatity"}
+                                element={"text-input"}
+                                type={"number"}
+                                min = {0}
+                                labelTxt={"quantity"}
+                                required={true}
+                                onChange={handleChange}
+                                value  = {productInfo.quanatity}
+                                placeholder={"Type quantity. . ."}
+                            />
                           <CustomSelect 
                                 optionsTitle={"Product Status"} 
                                 placeholder={"Select Status"}
@@ -252,9 +338,48 @@ const AddProductPage = () => {
                                       onClick={handleSwitchClick}
                                       switchOn={switchOn}
                                      id={"swBtn"} />
-                            {switchOn && <CheckBoxGroup 
-                                                checkboxOptions={locations}
-                                                />}
+                            <div style={{ opacity : switchOn? 1 : 0.5, 
+                                          width : "100%",
+                                          display : "flex",
+                                          flexDirection : "column",
+                                          gap : "16px" }}>
+                            <CustomInput 
+                                disabled = {!switchOn}
+                                id={"StorageArea-id"}
+                                name={"StorageArea"}
+                                element={"text-input"}
+                                type={"text"}
+                                labelTxt={"Storage Area"}
+                                required={true}
+                                onChange={handleChange}
+                                value  = {productInfo.VATAmount}
+                                placeholder={"Type Storage Area. . ."}
+                            />
+                            <CustomInput 
+                                disabled = {!switchOn}
+                                id={"StorageZone-id"}
+                                name={"StorageZone"}
+                                element={"text-input"}
+                                type={"text"}
+                                labelTxt={"Storage Zone"}
+                                required={true}
+                                onChange={handleChange}
+                                value  = {productInfo.VATAmount}
+                                placeholder={"Type Storage Zone. . ."}
+                            />
+                            <CustomInput 
+                                disabled = {!switchOn}
+                                id={"StorageLocation-id"}
+                                name={"StorageLocation"}
+                                element={"text-input"}
+                                type={"text"}
+                                labelTxt={"Storage Location"}
+                                required={true}
+                                onChange={handleChange}
+                                value  = {productInfo.VATAmount}
+                                placeholder={"Type Storage Location. . ."}
+                            />
+                            </div>
                       </PanelContainer>
                   </div>
                 </div> 

@@ -1,6 +1,6 @@
 import React, { Children } from 'react'
 
-const Button = ({ ftSize, txtCol, bgCol, wdh, hgt, brd, clName, children }) => {
+const Button = ({ ftSize, txtCol, bgCol, wdh, hgt, brd, clName, children, type, href, onClick }) => {
     const style = {
         color : txtCol,
         backgroundColor: bgCol, 
@@ -12,7 +12,10 @@ const Button = ({ ftSize, txtCol, bgCol, wdh, hgt, brd, clName, children }) => {
         gap : "8px",
     }
   return (
-      <button className= {`c-button ${clName}`} style={style}>
+      <button type={type} 
+              href = {href} 
+              className= {`c-button ${clName}`} 
+              style={style}>
         {Children.map(children, (child, index)=> {
             return index > 0? <h6>{child}</h6> : child
         })}

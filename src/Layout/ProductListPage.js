@@ -3,6 +3,7 @@ import PageHeader from '../components/PageHeader'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faCloudArrowUp } from '@fortawesome/free-solid-svg-icons'
 import AllProductsTable from '../components/AllProductsTable'
+import { Outlet } from 'react-router'
 
 library.add(faCloudArrowUp)
 const buttons1 = [

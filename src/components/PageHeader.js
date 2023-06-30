@@ -37,7 +37,7 @@ const PageHeader = ({ title, path, infoBtn }) => {
              })}
             </div>
         </div>
-        <ButtonsGroup infoBtn={infoBtn} />
+        <ButtonsGroup infoBtn={infoBtn} /> 
     </div>
   )
 }
