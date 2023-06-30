@@ -37,6 +37,8 @@ public class ProduitController {
     }
     @RequestMapping(method = RequestMethod.POST)
     public Produit createProduit(@RequestBody Produit a) {
+
+        System.out.println(a);
         return produitService.createProduit(a);
     }
 

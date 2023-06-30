@@ -3,6 +3,8 @@ package com.example.erpspring.Service;
 import com.example.erpspring.Interface.ProduitIInterface;
 import com.example.erpspring.Model.Produit;
 import com.example.erpspring.Repository.ProduitRepostory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,7 +13,7 @@ import java.util.Optional;
 
 @Service
 public class ProduitService implements ProduitIInterface {
-
+    private static final Logger logger = LoggerFactory.getLogger(ProduitService.class);
 
     @Autowired
     ProduitRepostory produitRepostory;
@@ -39,6 +41,14 @@ public class ProduitService implements ProduitIInterface {
 
     @Override
     public Produit createProduit(Produit produit) {
-        return produitRepostory.save(produit);
+
+         try {
+             return produitRepostory.save(produit);
+
+         }catch (Exception e)
+         {
+             logger.error(e.getMessage());
+         }
+        return produit;
     }
 }

@@ -1,12 +1,22 @@
 package com.example.erpspring.Security;
 
+import com.example.erpspring.Service.ProduitService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import javax.crypto.SecretKey;
+import java.security.KeyFactory;
+import java.security.PrivateKey;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.time.Instant;
+import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -14,6 +24,7 @@ import java.util.function.Function;
 
 @Component
 public class JwtUtils {
+    private static final Logger logger = LoggerFactory.getLogger(JwtUtils.class);
 
     @Value("${jwt.secret}")
     private String secret;
@@ -23,20 +34,28 @@ public class JwtUtils {
 
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
-        return createToken(claims, userDetails.getUsername());
+        try {
+            return generateJwtToken(userDetails.getUsername());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    private String createToken(Map<String, Object> claims, String subject) {
-        Date now = new Date();
-        Date expiryDate = new Date(now.getTime() + expiration * 1000);
 
-        return Jwts.builder()
-                .setClaims(claims)
-                .setSubject(subject)
-                .setIssuedAt(now)
-                .setExpiration(expiryDate)
-                .signWith(SignatureAlgorithm.RS256, secret)
-                .compact();
+    public String generateJwtToken(String email) {
+        SecretKey key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
+try {
+    return Jwts.builder()
+            .setSubject(email)
+            .setIssuedAt(new Date())
+            .setExpiration(new Date((new Date()).getTime() + expiration))
+            .signWith(key)
+            .compact();
+}catch (Exception e)
+{
+    logger.error(e.getMessage());
+}
+     return "Problem to genrate token";
     }
 
     public boolean validateToken(String token, UserDetails userDetails) {
