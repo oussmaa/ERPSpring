@@ -28,6 +28,13 @@ public class Produit {
     @Column(name = "Description", nullable = false)
     private String Description;
 
+    @Column(name = "Tax", nullable = false)
+    private Integer Tax;
+
+    @Column(name = "Promotion", nullable = false)
+    private Integer Promotion;
+
+
     @OneToOne
     @JoinColumn(name = "location_id")
     private Location location;

@@ -29,7 +29,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/LoactionController/**").permitAll()
                 .antMatchers("/ProduitController/**").permitAll()
                 .antMatchers("/StockController/**").permitAll()
-
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
