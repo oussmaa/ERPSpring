@@ -47,6 +47,11 @@ const sideBodyItems = [
                 type : "item",
                 text : "Categories", 
                 link : '/categories'
+            },
+            {
+                type : "item",
+                text : "Location", 
+                link : '/location'
             }
         ]
     },

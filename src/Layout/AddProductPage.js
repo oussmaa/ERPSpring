@@ -147,18 +147,18 @@ const AddProductPage = () => {
     }
     axios.post("http://localhost:5050/ProduitController", product)
     .then((response)=>{
-        setSuccessReq({success : "success", resMessage : "Your product saved successfully."})
+        setSuccessReq({success : "success", resMessage : "Your product saved successfully."}) //add success informations
         setTimeout(()=> {
-          setSuccessReq({success : "", resMessage : ""})
+          setSuccessReq({success : "", resMessage : ""}) //reset fetching information
         }, 5000)
     })
     .then(()=> {
-        setProductInfo(productInputValues)
+        setProductInfo(productInputValues) //reset all inputs
     })
     .catch((err)=>{
-      setSuccessReq({success : "failed", resMessage : err.message})
+      setSuccessReq({success : "failed", resMessage : err.message})//add failed informations
       setTimeout(()=> {
-        setSuccessReq({success : "", resMessage : ""})
+        setSuccessReq({success : "", resMessage : ""}) //reset fetching information
       }, 5000)
       console.log("hedha error mta36 el catch")
       console.log(err)
@@ -166,7 +166,7 @@ const AddProductPage = () => {
   }
 
   return (
-    <div className='add-product-page'>
+    <div className='add-product-page main-page'>
         <RequestMessage message={successReq.resMessage} success={successReq.success === "success"? "success"
                                                               : successReq.success === "failed"? "failed"
                                                               : ""} />

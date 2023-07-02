@@ -216,7 +216,9 @@ button {
   transition: 0.18s linear;
 }
 
-
+.main-page {
+  width: 100%;
+}
 
 /* navbar */
 .nav-bar {
@@ -1104,5 +1106,16 @@ button {
 .checkbox-group input{
   cursor: pointer;
 }
+
+/* ---- location Page ----*/
+
+.location-inputs {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
 
 
