@@ -1,10 +1,11 @@
 import React from 'react'
 
-const CustomSelect = ({optionsTitle,id, values, value, onChange, name, placeholder}) => {
+const CustomSelect = ({optionsTitle,id, values, value, onChange, name, placeholder, disabled}) => {
   return (
     <div className='select-option-container'>
         <label htmlFor={id} className='custom-label'>{optionsTitle}</label>
         <select 
+              disabled = {disabled}
               id={id} 
               onChange={(e)=> onChange(e)}
               value={value}

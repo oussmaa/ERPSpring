@@ -13,7 +13,7 @@ const buttons1 = [
       txtColor : "#667085",
       value : "cancel",
       type : 'link',
-      link : '/products',
+      link : '/',
     },
     {
       icon : "fa-solid fa-floppy-disk",
@@ -92,8 +92,8 @@ const Locations = () => {
                           labelTxt={"Storage Area"} 
                           type={"text"} 
                           element={"text-input"}
-                            placeholder={"Type new Storage Area..."}
-                            onChange={(e)=> {handleChange(e)}}
+                          placeholder={"Type new Storage Area..."}
+                          onChange={(e)=> {handleChange(e)}}
                           />
               </div>
           </Row>

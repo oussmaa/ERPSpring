@@ -26,7 +26,7 @@ const buttons1 = [
 // style={{border : "2px solid red"}}
 const ProductListPage = () => {
   return (
-    <div className='product-list-page' >
+    <div className='product-list-page' > 
       <PageHeader title={"Products"}  infoBtn={buttons1}/>
       <AllProductsTable />
     </div>

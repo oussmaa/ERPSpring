@@ -1,4 +1,4 @@
-import React, {  useState } from 'react'
+import React, {  useEffect, useState } from 'react'
 import PageHeader from '../components/PageHeader'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faDollarSign, faFilm, faFloppyDisk, faImage, faPercent } from '@fortawesome/free-solid-svg-icons'
@@ -11,7 +11,6 @@ import  Badge  from '../components/Badge'
 import AddMediaSpace from '../components/AddMediaSpace'
 import Row from '../components/Row'
 import SwitchButton from '../components/SwitchButton'
-import CheckBoxGroup from '../components/CheckBoxGroup'
 import axios from 'axios'
 import RequestMessage from '../components/RequestMessage'
 
@@ -32,9 +31,9 @@ const productInputValues = {
                               location : {
                                         status : false,
                                         options :    {
-                                              StorageArea : false,
-                                              StorageZone : false,
-                                              StorageLocation : false
+                                              StorageArea : "",
+                                              StorageZone : "",
+                                              StorageLocation : ""
                                             }
                                           }
                               }
@@ -79,11 +78,11 @@ const dropDownOptions = [
   }
 ]
 
-const locations = [
-  {value : "Storage Area", name : "StorageArea"}, 
-   {value : "Storage Zone", name : "StorageZone"},
-  {value : "StorageLocation", name : "StorageLocation"}
-  ]
+// const locations = [
+//   {value : "Storage Area", name : "StorageArea"}, 
+//    {value : "Storage Zone", name : "StorageZone"},
+//   {value : "StorageLocation", name : "StorageLocation"}
+//   ]
 
 
 
@@ -94,10 +93,11 @@ const locations = [
 const AddProductPage = () => {
 
   const [productInfo, setProductInfo] = useState({...productInputValues})
-
-                                                
-  const [switchOn, setSwitchOn] = useState(false)
-
+  const [locationSelectOptions, setLocationSelectOptions] = useState({
+                                                                    storageLocation : [],
+                                                                    storageZone : [],
+                                                                    storageArea : []
+                                                                      })
   const [successReq, setSuccessReq] = useState({
                                                   reqState : "",
                                                   resMessage : ""
@@ -105,21 +105,33 @@ const AddProductPage = () => {
   
 
 
+  useEffect(()=> {
+    axios.get("http://localhost:5050/LoactionController")
+    .then((result)=> {
+      console.log(result.data)
+      const allLoctions = [...result.data]
+      const stLocation = []
+      const stZone= []
+      const stArea= []
+      console.log(allLoctions)
+      allLoctions.map((loc)=> {
+        stLocation.push(loc.storageLocation)
+        stZone.push(loc.storageZone)
+        stArea.push(loc.storageArea)
+      })
+      setLocationSelectOptions({
+                                storageLocation : [...stLocation],
+                                storageZone : [...stZone],
+                                storageArea : [...stArea]
+                              })
+    })
+  }, [])
 
 
   const handleSwitchClick = ()=> {
-       setSwitchOn(!switchOn)
-       const updateProductInfo = {...productInfo, location : {...productInfo.location, status : switchOn}}
+      const switchBtn = productInfo.location.status
+       const updateProductInfo = {...productInfo, location : {...productInfo.location, status : !switchBtn}}
        setProductInfo(updateProductInfo)  
-   }
-
-
-   const handleCheckBoxChange = (e)=> {
-          const checked = e.target.checked
-          console.log(checked)
-          const updateLocation = {...productInfo.location.options }
-          updateLocation[e.target.name] = e.target.checked
-          setProductInfo({...productInfo, location : {...productInfo.location, options : updateLocation}})
    }
 
 
@@ -127,6 +139,12 @@ const AddProductPage = () => {
     const updateProductInfo = {...productInfo}
     updateProductInfo[e.target.name] = e.target.value
     setProductInfo(updateProductInfo)
+  }
+
+  const handleLocationChange = (e)=> {
+    const updateLocation = {...productInfo.location.options}
+    updateLocation[e.target.name] = e.target.value
+    setProductInfo({...productInfo, location : {...productInfo.location, options : {...updateLocation}}})
   }
 
 
@@ -143,7 +161,8 @@ const AddProductPage = () => {
       categorie : productInfo.category,
       // tag :productInfo.tag,
       quanatity : productInfo.quanatity,
-      // status : productInfo.status
+      // status : productInfo.status,
+      location_id : productInfo.location.options.StorageLocation
     }
     axios.post("http://localhost:5050/ProduitController", product)
     .then((response)=>{
@@ -336,49 +355,40 @@ const AddProductPage = () => {
                           <PanelHeader  title={"Location"}/>
                             <SwitchButton
                                       onClick={handleSwitchClick}
-                                      switchOn={switchOn}
+                                      switchOn={productInfo.location.status}
                                      id={"swBtn"} />
-                            <div style={{ opacity : switchOn? 1 : 0.5, 
+                            <div style={{ opacity : productInfo.location.status? 1 : 0.5, 
                                           width : "100%",
                                           display : "flex",
                                           flexDirection : "column",
                                           gap : "16px" }}>
-                            <CustomInput 
-                                disabled = {!switchOn}
-                                id={"StorageArea-id"}
-                                name={"StorageArea"}
-                                element={"text-input"}
-                                type={"text"}
-                                labelTxt={"Storage Area"}
-                                required={true}
-                                onChange={handleChange}
-                                value  = {productInfo.VATAmount}
-                                placeholder={"Type Storage Area. . ."}
-                            />
-                            <CustomInput 
-                                disabled = {!switchOn}
-                                id={"StorageZone-id"}
-                                name={"StorageZone"}
-                                element={"text-input"}
-                                type={"text"}
-                                labelTxt={"Storage Zone"}
-                                required={true}
-                                onChange={handleChange}
-                                value  = {productInfo.VATAmount}
-                                placeholder={"Type Storage Zone. . ."}
-                            />
-                            <CustomInput 
-                                disabled = {!switchOn}
-                                id={"StorageLocation-id"}
-                                name={"StorageLocation"}
-                                element={"text-input"}
-                                type={"text"}
-                                labelTxt={"Storage Location"}
-                                required={true}
-                                onChange={handleChange}
-                                value  = {productInfo.VATAmount}
-                                placeholder={"Type Storage Location. . ."}
-                            />
+                            <CustomSelect 
+                                    disabled = {!productInfo.location.status}
+                                    optionsTitle={"Storage Location"} 
+                                    placeholder={"Select a Storage Loaction"}
+                                    id={"StorageLocation-id"}
+                                    name={"StorageLocation"}
+                                    onChange={handleLocationChange}
+                                    value  = {productInfo.location.options.StorageLocation}
+                                    values={locationSelectOptions.storageLocation} />
+                            <CustomSelect 
+                                    disabled = {!productInfo.location.status}
+                                    optionsTitle={"Storage Zone"} 
+                                    placeholder={"Select a Storage Area"}
+                                    id={"StorageZone-id"}
+                                    name={"StorageZone"}
+                                    onChange={handleLocationChange}
+                                    value  = {productInfo.location.options.StorageZone}
+                                    values={locationSelectOptions.storageZone} />
+                            <CustomSelect 
+                                    disabled = {!productInfo.location.status}
+                                    optionsTitle={"Storage Area"} 
+                                    placeholder={"Select a Storage Area"}
+                                    id={"StorageArea-id"}
+                                    name={"StorageArea"}
+                                    onChange={handleLocationChange}
+                                    value  = {productInfo.location.options.StorageArea}
+                                    values={locationSelectOptions.storageArea} />
                             </div>
                       </PanelContainer>
                   </div>
