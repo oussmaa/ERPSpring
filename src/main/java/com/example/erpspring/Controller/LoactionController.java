@@ -37,7 +37,7 @@ public class LoactionController {
 
 
     @RequestMapping(value="/{id}",method = RequestMethod.GET)
-    public Optional<Location> getLocationById(@PathVariable("id") Long id) {
+    public Location getLocationById(@PathVariable("id") Long id) {
         return locationService.getLocationById(id);
     }
     @ExceptionHandler(Exception.class)

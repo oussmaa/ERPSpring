@@ -2,15 +2,11 @@ package com.example.erpspring.Service;
 
 import com.example.erpspring.Interface.LocationInterface;
 import com.example.erpspring.Model.Location;
-import com.example.erpspring.Model.Produit;
 import com.example.erpspring.Repository.LocationReposotory;
-import com.example.erpspring.Repository.ProduitRepostory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class LocationService implements LocationInterface {
@@ -34,8 +30,8 @@ public class LocationService implements LocationInterface {
     }
 
     @Override
-    public Optional<Location> getLocationById(Long id) {
-        return locationReposotory.findById(id);
+    public Location getLocationById(Long id) {
+         return locationReposotory.findById(id).orElse(null);
     }
 
     @Override

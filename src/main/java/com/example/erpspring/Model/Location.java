@@ -2,6 +2,9 @@ package com.example.erpspring.Model;
 
 import javax.persistence.*;
 import lombok.Data;
+
+import java.util.List;
+
 @Data
 @Entity
 public class Location {
@@ -11,15 +14,17 @@ public class Location {
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         private Long id;
 
-        @Column(name = "StorageArea", nullable = false)
+        @Column(name = "StorageArea")
         private String StorageArea;
 
-        @Column(name = "StorageZone", nullable = false)
-        private String StorageZone;
 
-        @Column(name = "StorageLocation", nullable = false)
-        private String StorageLocation;
+         @Column(name = "StorageZone")
+        private String storageZone;
 
+
+
+        @Column(name = "StorageLocation")
+        private String storageLocation;
 
 
     }

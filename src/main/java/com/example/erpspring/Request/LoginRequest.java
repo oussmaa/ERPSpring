@@ -1,4 +1,4 @@
-package com.example.erpspring.Auth;
+package com.example.erpspring.Request;
 
 import lombok.Data;
 

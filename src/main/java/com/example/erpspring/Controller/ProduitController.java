@@ -1,10 +1,16 @@
 package com.example.erpspring.Controller;
 
+import com.example.erpspring.Exception.LocationNotFoundException;
+import com.example.erpspring.Model.Location;
 import com.example.erpspring.Model.Produit;
-import com.example.erpspring.Model.Stock;
+import com.example.erpspring.Repository.LocationReposotory;
+import com.example.erpspring.Repository.ProduitRepostory;
+import com.example.erpspring.Request.ProduitRequest;
+import com.example.erpspring.Service.LocationService;
 import com.example.erpspring.Service.ProduitService;
-import com.example.erpspring.Service.StockServices;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,6 +24,10 @@ public class ProduitController {
     @Autowired
     ProduitService produitService;
 
+    @Autowired
+    ProduitRepostory produitRepostory;
+    @Autowired
+    LocationService locationService;
     @RequestMapping(method = RequestMethod.PUT)
     public Produit modifierProduit(@RequestBody Produit a) {
         return produitService.modifierProduit(a);
@@ -32,14 +42,34 @@ public class ProduitController {
         return produitService.getAllProduit();
     }
     @RequestMapping(value="/{id}",method = RequestMethod.GET)
-    public Optional<Produit> getProduitById(@PathVariable("id") Long id) {
-        return produitService.getProduitById(id);
+    public List<Produit> getProduitById(@PathVariable("id") String id) {
+
+        return produitRepostory.findProduitByLocation_StorageArea(id);
     }
     @RequestMapping(method = RequestMethod.POST)
-    public Produit createProduit(@RequestBody Produit a) {
+    public ResponseEntity<?> createProduit(@RequestBody ProduitRequest produit) {
+        try {
+            Location location = locationService.getLocationById(produit.getLocationid());
+            if (location == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Location not found");
+            }
+            Produit prod = new Produit();
+            prod.setNameProduit(produit.getNameProduit());
+            prod.setQuanatity(produit.getQuanatity());
+            prod.setPrice(produit.getPrice());
+            prod.setCategorie(produit.getCategorie());
+            prod.setDescription(produit.getDescription());
+            prod.setTax(produit.getTax());
+            prod.setPromotion(produit.getPromotion());
+            prod.setImage(produit.getImage());
+            prod.setLocation(location);
 
-        System.out.println(a);
-        return produitService.createProduit(a);
+            Produit createdProduit = produitService.createProduit(prod);
+            return ResponseEntity.ok(createdProduit);
+        }  catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred");
+        }
     }
+
 
 }

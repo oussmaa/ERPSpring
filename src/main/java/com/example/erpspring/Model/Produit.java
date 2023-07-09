@@ -4,6 +4,8 @@ package com.example.erpspring.Model;
 import javax.persistence.*;
 import lombok.Data;
 
+import java.util.ArrayList;
+
 
 @Data
 @Entity
@@ -34,8 +36,10 @@ public class Produit {
     @Column(name = "Promotion", nullable = false)
     private Integer Promotion;
 
+    @Column(name = "Image", nullable = false)
+    private ArrayList<String> Image;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "location_id")
     private Location location;
 }
